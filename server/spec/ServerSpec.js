@@ -65,9 +65,11 @@ describe('Node Server Request Listener Function', function() {
     var res = new stubs.response();
 
     handler.requestHandler(req, res);
+    console.log('this is status code ',res._responseCode);
 
     // Expect 201 Created response status
     expect(res._responseCode).to.equal(201);
+
 
     // Testing for a newline isn't a valid test
     // TODO: Replace with with a valid test

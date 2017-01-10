@@ -11,7 +11,7 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
-
+var urlParser = require('url');
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -29,6 +29,15 @@ var requestHandler = function(request, response) {
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
+  var method = request.method;
+  //console.log(request.url);
+  var link = request.url;
+  //urlPart = urlParser.parse(link);
+
+  console.log('Url is: ' + link);
+  //var urlParts = url.parse(url).pathname;
+  //console.log('urlParts is: ' + urlParts);
+  var body = [];
   // The outgoing status.
 
   var statusCode = 200;
@@ -52,13 +61,43 @@ var requestHandler = function(request, response) {
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
-  response.writeHead(statusCode, headers);
 
-  if (request.method === 'POST') {
-    statusCode = 201;
-  } else if (request.method === 'GET') {
-    statusCode = 200;
+  if (link === '/classes/messages') {
+      //POST REQUEST
+    if (method === 'POST') {
+      statusCode = 201;
+      request.on('data', function (chunk) {
+        body.push(chunk);
+      });
+      // .on('end', function () {
+      //   body = Buffer.concat(body).toString();
+      // });
+      //GET REQUEST
+    } else if (method === 'GET' /*&& url === '/classes/messages'*/) {
+      statusCode = 200;
+      //Could Not Find Request
+    } 
+
+    // request.on('end', function () {
+    //   body = Buffer.concat(body).toString();
+    // });
+    console.log(body);
+  } else {
+    statusCode = 404;
+    request.on('error', function (err) {
+      console.error('There was an error in parsing data: ', err);
+    });
   }
+
+  response.writeHead(statusCode, headers);
+  // Note: the 2 lines above could be replaced with this next one:
+  // response.writeHead(200, {'Content-Type': 'application/json'})
+
+
+    // Note: the 2 lines above could be replaced with this next one:
+    // response.end(JSON.stringify(responseBody))
+
+
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
@@ -67,10 +106,12 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  var data = {results: ['Hello, World!']};
+  
+  var data = {results: body};
   var responseJSON = JSON.stringify(data);
   response.end(responseJSON);
-};
+
+}; //end of FUNCTION
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
 // This code allows this server to talk to websites that
