@@ -54,6 +54,12 @@ var requestHandler = function(request, response) {
   // which includes the status and all headers.
   response.writeHead(statusCode, headers);
 
+  if (request.method === 'POST') {
+    statusCode = 201;
+  } else if (request.method === 'GET') {
+    statusCode = 200;
+  }
+
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
   // response.end() will be the body of the response - i.e. what shows
@@ -61,7 +67,7 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  var data = 'Hello, World!';
+  var data = {results: ['Hello, World!']};
   var responseJSON = JSON.stringify(data);
   response.end(responseJSON);
 };
@@ -77,4 +83,4 @@ var requestHandler = function(request, response) {
 // client from this domain by setting up static file serving.
 
 
-module.exports.requestHandler = requestHandler;  
+module.exports.requestHandler = requestHandler;
