@@ -1,4 +1,4 @@
-/* Import node's http module: */ console.log(require);
+/* Import node's http module: */ 
 var http = require('http');
 var handleRequest = require('./request-handler');
 

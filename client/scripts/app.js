@@ -227,7 +227,7 @@ var app = {
 
   startSpinner: function() {
     $('.spinner img').show();
-    $('form input[type=submit]').attr('disabled', 'true');
+    $('form input[type=submit]').attr('disabled', null);
   },
 
   stopSpinner: function() {
